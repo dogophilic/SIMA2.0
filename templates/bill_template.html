@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice - Bill #{{ bill.bill_id }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding: 30px;
+      background-color: #f8f9fa;
+    }
+    .invoice-box {
+      background: white;
+      padding: 30px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+    }
+    .invoice-header {
+      border-bottom: 2px solid #000;
+      margin-bottom: 20px;
+    }
+    .invoice-footer {
+      border-top: 1px solid #000;
+      margin-top: 20px;
+      padding-top: 10px;
+      font-size: 0.9em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-box">
+    <div class="invoice-header text-center">
+      <h2>InventoryApp</h2>
+      <p><strong>Bill ID:</strong> {{ bill.bill_id }}</p>
+      <p><strong>Date:</strong> {{ bill.created_at_str }}</p>
+      <p><strong>Customer Name:</strong> {{ bill.customer_name }}</p>
+      <p><strong>Customer Phone:</strong> {{ bill.customer_mobile }}</p>
+    </div>
+
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Medicine</th>
+          <th>Quantity</th>
+          <th>Price (₹)</th>
+          <th>Total (₹)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ "%.2f"|format(item.price_at_sale) }}</td>
+          <td>{{ "%.2f"|format(item.quantity * item.price_at_sale) }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+          <td>{{ "%.2f"|format(bill.subtotal) }}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="text-end"><strong>Discount:</strong></td>
+          <td>{{ "%.2f"|format(bill.discount) }}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="text-end"><strong>Grand Total:</strong></td>
+          <td><strong>{{ "%.2f"|format(bill.total) }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="invoice-footer">
+      Thank you for shopping with us!<br>
+      InventoryApp © {{ current_year }}
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!-- templates/edit_product.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('view_products_bp.view_products') }}">
+        InventoryApp
+      </a>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2>Edit Product</h2>
+
+    <!-- Main form for editing -->
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" name="name" value="{{ product.name }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Category</label>
+        <input type="text" class="form-control" name="category" value="{{ product.category }}">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Price (₹)</label>
+        <input type="number" step="0.01" class="form-control" name="price" value="{{ product.price }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Stock</label>
+        <input type="number" class="form-control" name="stock" value="{{ product.stock }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Expiry Date</label>
+        <input type="date" class="form-control" name="expiry" value="{{ product.expiry or '' }}">
+      </div>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+      <a href="{{ url_for('view_products_bp.view_products') }}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+
+    <!-- Separate form for deletion -->
+    <form action="{{ url_for('delete_product', product_id=product.product_id) }}" method="POST" class="d-inline mt-3">
+      <button type="submit" class="btn btn-danger mt-3">Delete Product</button>
+    </form>
+  </div>
+</body>
+</html>

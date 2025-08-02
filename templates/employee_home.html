@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/bgimages1.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="30" class="d-inline-block align-text-top">
+                SIMA - Employee
+            </a>
+        </div>
+    </nav>
+
+    <div class="container text-center mt-5">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" width="100" class="mb-4">
+        <h1 class="mb-3">Welcome Employee</h1>
+        <p class="lead">Quick access to billing operations</p>
+        <a href="{{ url_for('bill_bp.bill') }}" class="btn btn-primary btn-lg m-2">Make a Bill</a>
+        <a href="{{ url_for('view_bills') }}" class="btn btn-success btn-lg m-2">View All Bills</a>
+    </div>
+</body>
+</html>
