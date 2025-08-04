@@ -1,3 +1,4 @@
+#generate_pdf.py
 import pdfkit
 from flask import Blueprint, render_template, send_file, abort
 from db_connection import create_connection
