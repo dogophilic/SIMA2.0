@@ -1,4 +1,4 @@
-#generate_pdf.py
+# generate_pdf.py
 import pdfkit
 from flask import Blueprint, render_template, send_file, abort
 from db_connection import create_connection
@@ -8,8 +8,14 @@ import datetime
 
 generate_pdf_bp = Blueprint('generate_pdf', __name__)
 
-# Explicit path to wkhtmltopdf executable
-WKHTMLTOPDF_PATH = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+# Detect Render or local environment and configure wkhtmltopdf accordingly
+if os.getenv("RENDER"):
+    # Render environment: use bundled binary
+    WKHTMLTOPDF_PATH = os.path.join('bin', 'wkhtmltopdf')
+else:
+    # Local environment: use installed wkhtmltopdf path (Windows)
+    WKHTMLTOPDF_PATH = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_PATH)
 
 @generate_pdf_bp.route('/download_bill_pdf/<int:bill_id>')
@@ -35,7 +41,7 @@ def download_bill_pdf(bill_id):
         if not bill:
             abort(404)
 
-        # Format date for display
+        # Format date
         if bill.get('created_at'):
             bill['created_at_str'] = bill['created_at'].strftime('%Y-%m-%d %H:%M:%S')
         else:
@@ -51,7 +57,6 @@ def download_bill_pdf(bill_id):
         # Calculate total
         bill['total'] = float(bill.get('total_amount', 0))
 
-        # Add current year for footer
         current_year = datetime.datetime.now().year
 
         rendered = render_template('bill_template.html', bill=bill, items=items, current_year=current_year)
