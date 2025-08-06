@@ -1,9 +1,12 @@
 services:
   - type: web
-    name: sima-app
+    name: sima-pdf-app
     env: python
-    buildCommand: ./build.sh && pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
-      - key: FLASK_ENV
-        value: production
+      - key: WKHTMLTOPDF_PATH
+        value: /usr/bin/wkhtmltopdf
+    build:
+      aptPackages:
+        - wkhtmltopdf
