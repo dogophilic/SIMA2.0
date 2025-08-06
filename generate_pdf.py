@@ -1,4 +1,3 @@
-# generate_pdf.py
 import os
 import datetime
 from decimal import Decimal
@@ -46,10 +45,10 @@ def download_bill_pdf(bill_id):
 
         # Format bill creation date in IST
         if bill.get('created_at'):
-            utc_time = bill['created_at']
-            if utc_time.tzinfo is None:
-                utc_time = utc_time.replace(tzinfo=pytz.utc)
-            ist_time = utc_time.astimezone(IST)
+            raw_time = bill['created_at']
+            if raw_time.tzinfo is None:
+                raw_time = IST.localize(raw_time)  # Assume naive timestamp is already in IST
+            ist_time = raw_time.astimezone(IST)
             bill['created_at_str'] = ist_time.strftime('%d-%m-%Y %I:%M %p IST')
         else:
             bill['created_at_str'] = 'N/A'
