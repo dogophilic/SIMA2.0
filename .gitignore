@@ -1,0 +1,4 @@
+bin/wkhtmltopdf
+temp/
+*.log
+__pycache__/
