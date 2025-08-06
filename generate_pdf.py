@@ -17,6 +17,9 @@ else:
 
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_PATH)
 
+# Define IST timezone
+IST = pytz.timezone("Asia/Kolkata")
+
 @generate_pdf_bp.route('/download_bill_pdf/<int:bill_id>')
 def download_bill_pdf(bill_id):
     try:
@@ -41,11 +44,12 @@ def download_bill_pdf(bill_id):
         cursor.close()
         conn.close()
 
-        # Format bill creation date with IST time zone
+        # Format bill creation date in IST
         if bill.get('created_at'):
-            ist = pytz.timezone('Asia/Kolkata')
-            utc_time = bill['created_at'].replace(tzinfo=pytz.utc)
-            ist_time = utc_time.astimezone(ist)
+            utc_time = bill['created_at']
+            if utc_time.tzinfo is None:
+                utc_time = utc_time.replace(tzinfo=pytz.utc)
+            ist_time = utc_time.astimezone(IST)
             bill['created_at_str'] = ist_time.strftime('%d-%m-%Y %I:%M %p IST')
         else:
             bill['created_at_str'] = 'N/A'
@@ -55,7 +59,9 @@ def download_bill_pdf(bill_id):
         bill['subtotal'] = float(subtotal)
         bill['discount'] = float(bill.get('discount', 0))
         bill['total'] = float(bill.get('total_amount', 0))
-        current_year = datetime.datetime.now().year
+
+        # Current year in IST
+        current_year = datetime.datetime.now(IST).year
 
         # Render to HTML and generate PDF
         rendered = render_template('bill_template.html', bill=bill, items=items, current_year=current_year)
