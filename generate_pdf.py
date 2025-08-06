@@ -2,6 +2,7 @@
 import os
 import datetime
 from decimal import Decimal
+import pytz
 import pdfkit
 from flask import Blueprint, render_template, send_file, abort
 from db_connection import create_connection
@@ -40,8 +41,14 @@ def download_bill_pdf(bill_id):
         cursor.close()
         conn.close()
 
-        # Format bill creation date
-        bill['created_at_str'] = bill['created_at'].strftime('%Y-%m-%d %H:%M:%S') if bill.get('created_at') else 'N/A'
+        # Format bill creation date with IST time zone
+        if bill.get('created_at'):
+            ist = pytz.timezone('Asia/Kolkata')
+            utc_time = bill['created_at'].replace(tzinfo=pytz.utc)
+            ist_time = utc_time.astimezone(ist)
+            bill['created_at_str'] = ist_time.strftime('%d-%m-%Y %I:%M %p IST')
+        else:
+            bill['created_at_str'] = 'N/A'
 
         # Calculate subtotal using Decimal
         subtotal = sum(Decimal(item['quantity']) * Decimal(item['price_at_sale']) for item in items)
