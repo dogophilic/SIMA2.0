@@ -10,7 +10,7 @@
         <h2 class="text-center">InventoryApp</h2>
         <hr>
         <p><strong>Bill ID:</strong> {{ bill.bill_id }}</p>
-        <p><strong>Date:</strong> {{ bill.created_at or 'N/A' }}</p>
+        <p><strong>Date:</strong> {{ bill.created_at_str or 'N/A' }}</p>
         <p><strong>Customer Name:</strong> {{ bill.customer_name or 'N/A' }}</p>
         <p><strong>Mobile:</strong> {{ bill.customer_mobile or 'N/A' }}</p>
 
