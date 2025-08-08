@@ -5,6 +5,7 @@ import re
 from flask import make_response, Response, Flask, render_template, request, redirect, url_for, session
 from datetime import datetime
 from db_connection import create_connection
+from pytz import timezone, utc
 
 app = Flask(__name__)
 app.secret_key = '123456'  # Replace with a secure key in production
@@ -90,15 +91,21 @@ def view_bills():
         cursor.execute("SELECT * FROM bills ORDER BY created_at DESC")
         bills = cursor.fetchall()
 
+        ist = timezone('Asia/Kolkata')
+
         for bill in bills:
             if isinstance(bill['created_at'], datetime):
-                bill['created_at'] = bill['created_at'].strftime('%Y-%m-%d %H:%M')
+                utc_time = bill['created_at'].replace(tzinfo=utc)
+                local_time = utc_time.astimezone(ist)
+                bill['created_at'] = local_time.strftime('%Y-%m-%d %I:%M %p')
 
         cursor.close()
         conn.close()
         return render_template('view_bills.html', bills=bills)
+    
     except Exception as e:
         return f"Error fetching bills: {str(e)}"
+
 
 @app.route('/clear_cart', methods=['POST'])
 def clear_cart():

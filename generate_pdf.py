@@ -47,8 +47,8 @@ def download_bill_pdf(bill_id):
         if bill.get('created_at'):
             raw_time = bill['created_at']
             if raw_time.tzinfo is None:
-                raw_time = IST.localize(raw_time)  # Assume naive timestamp is already in IST
-            ist_time = raw_time.astimezone(IST)
+                raw_time = pytz.utc.localize(raw_time)  # Treat it as UTC first
+            ist_time = raw_time.astimezone(IST)         # Convert to IST
             bill['created_at_str'] = ist_time.strftime('%d-%m-%Y %I:%M %p IST')
         else:
             bill['created_at_str'] = 'N/A'
