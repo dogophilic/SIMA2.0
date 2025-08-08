@@ -33,7 +33,8 @@
         <img src="{{ url_for('static', filename='images/logo.jpg') }}" width="100" class="mb-4">
         <h1 class="mb-3">Welcome Employee</h1>
         <p class="lead">Quick access to billing operations</p>
-        <a href="{{ url_for('bill_bp.bill') }}" class="btn btn-primary btn-lg m-2">Make a Bill</a>
+        <!-- Updated Make a Bill link -->
+        <a href="{{ url_for('bill_bp.employee_bill') }}" class="btn btn-primary btn-lg m-2">Make a Bill</a>
         <a href="{{ url_for('view_bills') }}" class="btn btn-success btn-lg m-2">View All Bills</a>
     </div>
 </body>

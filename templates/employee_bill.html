@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Bill (Employee)</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 30px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: auto;
+        }
+        h2, h3 {
+            color: #0066cc;
+        }
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        input, select {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .secondary-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .secondary-btn:hover {
+            background-color: #d32f2f;
+        }
+        #productSearch {
+            margin-bottom: 10px;
+        }
+        .home-btn {
+            margin-top: 20px;
+            background-color: #28a745;
+        }
+        .home-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create New Bill (Employee)</h2>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <label>Customer Name:</label>
+            <input type="text" name="customer_name" required value="{{ session.customer_name if session.customer_name }}">
+
+            <label>Customer Mobile:</label>
+            <input type="text" name="customer_mobile" required value="{{ session.customer_mobile if session.customer_mobile }}">
+
+            <label for="searchable-select">Select Product:</label>
+            <input type="text" id="searchable-input" placeholder="Search and select a product...">
+            <select id="searchable-select" name="product_id" required size="5" style="margin-top: 5px; width: 100%; display: none;">
+                {% for product in products %}
+                    <option value="{{ product.product_id }}">
+                        {{ product.name }} (₹{{ product.price }} | {{ product.stock }} in stock)
+                    </option>
+                {% endfor %}
+            </select>
+
+            <script>
+                const input = document.getElementById("searchable-input");
+                const select = document.getElementById("searchable-select");
+
+                input.addEventListener("input", () => {
+                    const filter = input.value.toLowerCase();
+                    const options = select.options;
+                    let hasVisible = false;
+
+                    for (let i = 0; i < options.length; i++) {
+                        const text = options[i].text.toLowerCase();
+                        const match = text.includes(filter);
+                        options[i].style.display = match ? "" : "none";
+                        if (match) hasVisible = true;
+                    }
+
+                    select.style.display = hasVisible ? "block" : "none";
+                });
+
+                select.addEventListener("change", () => {
+                    const selectedOption = select.options[select.selectedIndex];
+                    input.value = selectedOption.text;
+                    select.style.display = "none";
+
+                    let hiddenInput = document.querySelector("input[name='product_id']");
+                    if (!hiddenInput) {
+                        hiddenInput = document.createElement("input");
+                        hiddenInput.type = "hidden";
+                        hiddenInput.name = "product_id";
+                        input.closest("form").appendChild(hiddenInput);
+                    }
+                    hiddenInput.value = selectedOption.value;
+                });
+            </script>
+
+            <label>Quantity:</label>
+            <input type="number" name="quantity" min="1" value="1" required>
+
+            <input type="submit" class="btn" value="Add to Bill">
+        </form>       
+
+        {% if cart %}
+        <form action="{{ url_for('clear_cart') }}" method="post">
+            <button type="submit" class="secondary-btn">Clear Cart</button>
+        </form>
+
+        <hr>
+        <h3>Current Bill</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>₹{{ item.total | float }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><strong>Grand Total: ₹{{ grand_total | float }}</strong></p>
+
+        <form action="{{ url_for('finalize_bill.finalize_bill') }}" method="POST">
+            <input type="submit" class="btn" value="Finalize Bill">
+        </form>
+        {% endif %}
+
+        <!-- Home Button -->
+        <a href="{{ url_for('employee_bp.employee_home') }}" class="btn home-btn">Home</a>
+    </div>
+
+    <script>
+        function filterProducts() {
+            var input = document.getElementById("productSearch");
+            var filter = input.value.toUpperCase();
+            var select = document.getElementById("productDropdown");
+            var options = select.getElementsByTagName("option");
+
+            for (var i = 0; i < options.length; i++) {
+                var text = options[i].textContent || options[i].innerText;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
