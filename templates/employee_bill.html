@@ -81,6 +81,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="{{ url_for('auth_bp.home_redirect') }}" class="btn btn-primary">Home</a>
         <h2>Create New Bill (Employee)</h2>
 
         {% if error %}
@@ -179,8 +180,6 @@
         </form>
         {% endif %}
 
-        <!-- Home Button -->
-        <a href="{{ url_for('auth_bp.home_redirect') }}" class="btn btn-primary">Home</a>
     </div>
 
     <script>

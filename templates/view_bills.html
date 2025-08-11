@@ -60,6 +60,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="{{ url_for('auth_bp.home_redirect') }}" class="btn btn-primary">Home</a>
         <h1>All Bills</h1>
         <form method="get" action="{{ url_for('search_bills') }}" class="d-flex mb-4">
             <input type="text" name="query" placeholder="Search by name or date (YYYY-MM-DD)" class="form-control" />
@@ -105,6 +106,5 @@
             </tbody>
         </table>
     </div>
-<a href="{{ url_for('auth_bp.home_redirect') }}" class="btn btn-primary">Home</a>
 </body>
 </html>
