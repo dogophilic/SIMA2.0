@@ -75,6 +75,9 @@
 </head>
 <body>
     <div class="container">
+        <br>
+        <a href="{{ url_for('auth_bp.home_redirect') }}" class="btn btn-primary">Home</a>
+        <br>
         <h2>Create New Bill</h2>
 
         {% if error %}

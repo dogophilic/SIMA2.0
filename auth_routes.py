@@ -32,3 +32,16 @@ def login():
 
     return render_template('login.html')
 
+# auth_routes.py
+@auth_bp.route('/home')
+def home_redirect():
+    role = session.get('role')
+    if role == 'admin':
+        return redirect(url_for('index'))
+    elif role == 'employee':
+        return redirect(url_for('employee_bp.employee_home'))
+    else:
+        # If not logged in or unknown role
+        return redirect(url_for('auth_bp.login'))
+
+
